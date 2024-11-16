@@ -8,7 +8,7 @@ def check_proxy(row, api_url_template):
     ip, port = row[0].strip(), row[1].strip()
     api_url = api_url_template.format(ip=ip, port=port)
     try:
-        response = requests.get(api_url, timeout=10)
+        response = requests.get(api_url, timeout=60)
         response.raise_for_status()
         data = response.json()
 
