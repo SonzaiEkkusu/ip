@@ -52,7 +52,7 @@ def main():
         print(f"File {input_file} tidak ditemukan.")
         return
 
-    with ThreadPoolExecutor(max_workers=25) as executor:
+    with ThreadPoolExecutor(max_workers=10) as executor:
         futures = {executor.submit(check_proxy, row, api_url_template): row for row in rows if len(row) >= 2}
 
         for future in as_completed(futures):
