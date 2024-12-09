@@ -36,7 +36,7 @@ def check_proxy(row, api_url_template):
         return (None, error_message)
 
 def main():
-    input_file = os.getenv('IP_FILE', 'proxy.txt')
+    input_file = os.getenv('IP_FILE', 'ip.txt')
     output_file = 'proxy_updated.txt'
     error_file = 'errorproxy.txt'
     api_url_template = os.getenv('API_URL', 'https://apix.sonzaix.us.kg/?ip={ip}:{port}')
