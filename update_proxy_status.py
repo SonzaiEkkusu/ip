@@ -39,7 +39,7 @@ def main():
     input_file = os.getenv('IP_FILE', 'proxy.txt')
     output_file = 'proxy_updated.txt'
     error_file = 'errorproxy.txt'
-    api_url_template = os.getenv('API_URL', 'https://apix.sonzaix.workers.dev/?ip={ip}:{port')
+    api_url_template = os.getenv('API_URL', 'https://apix.sonzaix.workers.dev/?ip={ip}:{port}')
 
     alive_proxies = []
     error_logs = []
