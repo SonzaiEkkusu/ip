@@ -14,13 +14,13 @@ def check_proxy(row, api_url_template):
 
         proxyip = data.get("proxyStatus", "")
         if isinstance(proxyip, bool):
-            status = proxyip
+            status = "✅ ALIVE ✅" if proxyip else "DEAD"
         elif isinstance(proxyip, str):
-            status = proxyip.strip().lower() == "true"
+            status = "✅ ALIVE ✅" if proxyip.strip().lower() == "true" else "DEAD"
         else:
-            status = False
+            status = "DEAD"
 
-        if status:
+        if status == "✅ ALIVE ✅":
             print(f"{ip}:{port} is ALIVE")
             return (row, None)
         else:
@@ -39,7 +39,7 @@ def main():
     input_file = os.getenv('IP_FILE', 'proxy.txt')
     output_file = 'proxy_updated.txt'
     error_file = 'errorproxy.txt'
-    api_url_template = os.getenv('API_URL', 'https://apix.sonzaix.workers.dev/?ip={ip}:{port}')
+    api_url_template = os.getenv('API_URL', 'https://apix.sonzaix.us.kg/?ip={ip}:{port}')
 
     alive_proxies = []
     error_logs = []
@@ -88,4 +88,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-            
