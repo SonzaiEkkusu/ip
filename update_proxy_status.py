@@ -12,7 +12,7 @@ def check_proxy(row, api_url_template):
         response.raise_for_status()
         data = response.json()
 
-        proxyip = data.get("proxyip", "")
+        proxyip = data.get("proxyStatus", "")
         if isinstance(proxyip, bool):
             status = proxyip
         elif isinstance(proxyip, str):
@@ -39,7 +39,7 @@ def main():
     input_file = os.getenv('IP_FILE', 'proxy.txt')
     output_file = 'proxy_updated.txt'
     error_file = 'errorproxy.txt'
-    api_url_template = os.getenv('API_URL', 'https://p01--boiling-frame--kw6dd7bjv2nr.code.run/check?ip={ip}&host=speed.cloudflare.com&port={port}&tls=true')
+    api_url_template = os.getenv('API_URL', 'https://apix.sonzaix.us.kg/?ip={ip}:{port')
 
     alive_proxies = []
     error_logs = []
@@ -88,3 +88,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+            
