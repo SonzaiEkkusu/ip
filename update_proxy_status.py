@@ -1,6 +1,5 @@
 import requests
 import csv
-import shutil
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -12,20 +11,16 @@ def check_proxy(row, api_url_template):
         response.raise_for_status()
         data = response.json()
 
-        proxyip = data.get("proxyip", "")
-        if isinstance(proxyip, bool):
-            status = proxyip
-        elif isinstance(proxyip, str):
-            status = proxyip.strip().lower() == "true"
-        else:
-            status = False
+        proxy_status = data.get("proxyStatus", "").strip()
+        status = proxy_status == "✅ ALIVE ✅"
 
         if status:
             print(f"{ip}:{port} is ALIVE")
             return (row, None)
         else:
             print(f"{ip}:{port} is DEAD")
-            return (None, None)
+            return (None, f"{ip}:{port} is DEAD")
+
     except requests.exceptions.RequestException as e:
         error_message = f"Error checking {ip}:{port}: {e}"
         print(error_message)
@@ -39,7 +34,7 @@ def main():
     input_file = os.getenv('IP_FILE', 'proxy.txt')
     output_file = 'proxy_updated.txt'
     error_file = 'errorproxy.txt'
-    api_url_template = os.getenv('API_URL', 'https://p01--boiling-frame--kw6dd7bjv2nr.code.run/check?ip={ip}&host=speed.cloudflare.com&port={port}&tls=true')
+    api_url_template = os.getenv('API_URL', 'https://apix.sonzaix.us.kg/?ip={ip}:{port}')
 
     alive_proxies = []
     error_logs = []
@@ -56,35 +51,21 @@ def main():
         futures = {executor.submit(check_proxy, row, api_url_template): row for row in rows if len(row) >= 2}
 
         for future in as_completed(futures):
-            alive, error = future.result()
-            if alive:
-                alive_proxies.append(alive)
+            result, error = future.result()
+            if result:
+                alive_proxies.append(result)
             if error:
                 error_logs.append(error)
 
-    try:
-        with open(output_file, "w", newline="") as f:
-            writer = csv.writer(f)
-            writer.writerows(alive_proxies)
-    except Exception as e:
-        print(f"Error menulis ke {output_file}: {e}")
-        return
+    with open(output_file, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerows(alive_proxies)
 
-    if error_logs:
-        try:
-            with open(error_file, "w") as f:
-                for error in error_logs:
-                    f.write(error + "\n")
-            print(f"Beberapa error telah dicatat di {error_file}.")
-        except Exception as e:
-            print(f"Error menulis ke {error_file}: {e}")
-            return
+    with open(error_file, "w") as f:
+        for error in error_logs:
+            f.write(error + "\n")
 
-    try:
-        shutil.move(output_file, input_file)
-        print(f"{input_file} telah diperbarui dengan proxy yang ALIVE.")
-    except Exception as e:
-        print(f"Error menggantikan {input_file}: {e}")
+    print("Proses selesai. Cek proxy_updated.txt dan errorproxy.txt.")
 
 if __name__ == "__main__":
     main()
